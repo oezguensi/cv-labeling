@@ -4,7 +4,7 @@ import { FC, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import i18n from "i18next"
 
-const AppHeader: FC<{ setTheme: any }> = ({ setTheme }) => {
+const AppHeader: FC<{ setTheme: CallableFunction }> = ({ setTheme }) => {
     const { t } = useTranslation()
 
     const [rightPanelIsExpanded, setrightPanelIsExpanded] = useState<boolean>(false)
