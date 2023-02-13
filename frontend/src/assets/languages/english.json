@@ -1,0 +1,16 @@
+{
+    "translation": {
+        "AppHeader": {
+            "HeaderName": "Labeling Augmentation Tool",
+            "HeaderGlobalAction1": {
+                "aria-label": "Theme Switcher"
+            },
+            "HeaderGlobalAction2": {
+                "aria-label": "Language Switcher"
+            },
+            "HeaderGlobalAction3": {
+                "aria-label": "Information"
+            }
+        }
+    }
+}
