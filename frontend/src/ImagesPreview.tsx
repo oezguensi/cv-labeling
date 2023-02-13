@@ -1,15 +1,10 @@
-import { Grid, Column } from '@carbon/react'
+import { FC } from 'react'
 import './ImagesPreview.scss'
 
-const ImagesPreview = () => {
+const ImagesPreview: FC<{ imageFiles: any[], setSelectedImageFile: CallableFunction }> = ({ imageFiles, setSelectedImageFile }) => {
     return (
         <div id='images-preview'>
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
-            <img src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
+            {imageFiles.map(imageFile => <img src={URL.createObjectURL(imageFile)} onClick={() => setSelectedImageFile(imageFile)} />)}
         </div>
     )
 }

@@ -1,9 +1,9 @@
 import { FC } from "react"
 import './MainImage.scss'
 
-const MainImage: FC<{ imageURL: string }> = ({ imageURL }) => {
+const MainImage: FC<{ selectedImageFile: any }> = ({ selectedImageFile }) => {
     return (
-        <img src={imageURL} />
+        <img src={URL.createObjectURL(selectedImageFile)} />
     )
 }
 
