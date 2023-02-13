@@ -1,8 +1,11 @@
 import { useState } from 'react'
-import { Theme } from '@carbon/react'
+import { Theme, Grid, Column, FileUploaderDropContainer } from '@carbon/react'
 import './App.scss'
 import AppHeader from './AppHeader'
 import OperationsList from './OperationsList'
+import ActiveOperationsList from './ActiveOperationsList'
+import MainImage from './MainImage'
+import ImagesPreview from './ImagesPreview'
 
 
 const App = () => {
@@ -10,7 +13,24 @@ const App = () => {
   return (
     <Theme theme={theme}>
       <AppHeader setTheme={setTheme} />
-      <OperationsList />
+
+
+      <Grid>
+        <Column lg={5}><OperationsList /></Column>
+        <Column lg={2}><ActiveOperationsList /></Column>
+        <Column lg={9}>
+          <MainImage imageURL='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
+          <ImagesPreview />
+          <FileUploaderDropContainer
+            labelText="Drag and drop files here or click to upload"
+            multiple={true}
+            accept={['image/jpeg', 'image/png']}
+            disabled={false}
+            name=""
+            tabIndex={0}
+          />
+        </Column>
+      </Grid>
     </Theme>
   )
 }
