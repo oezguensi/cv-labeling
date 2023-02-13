@@ -13,12 +13,10 @@ const App = () => {
   return (
     <Theme theme={theme}>
       <AppHeader setTheme={setTheme} />
-
-
-      <Grid>
-        <Column lg={5}><OperationsList /></Column>
-        <Column lg={2}><ActiveOperationsList /></Column>
-        <Column lg={9}>
+      <Grid id='main'>
+        <Column lg={4}><OperationsList /></Column>
+        <Column lg={1}><ActiveOperationsList /></Column>
+        <Column lg={11}>
           <MainImage imageURL='https://upload.wikimedia.org/wikipedia/commons/thumb/8/8a/Bolt_Technology_Logo_2019.svg/2560px-Bolt_Technology_Logo_2019.svg.png' />
           <ImagesPreview />
           <FileUploaderDropContainer
