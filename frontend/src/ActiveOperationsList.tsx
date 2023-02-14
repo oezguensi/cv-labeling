@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { FC, useEffect, useMemo, useState } from "react"
 import { DragDropContext, Draggable, Droppable, DroppableProps } from "react-beautiful-dnd"
 
 
@@ -41,52 +41,61 @@ const getItemStyle = (isDragging: any, draggableStyle: any) => ({
     ...draggableStyle
 })
 
-const ActiveOperationsList = () => {
-    const [items, setItems] = useState(Array.from([
-        { id: `item-1`, content: `item 1` },
-        { id: `item-2`, content: `item 2` },
-        { id: `item-3`, content: `item 3` },
-        { id: `item-4`, content: `item 4` }
-    ]))
+const ActiveOperationsList: FC<{ activeOperations: any[] }> = ({ activeOperations }) => {
+    const [orderedOperationIDs, setOrderedOperationIDs] = useState<string[]>(() => activeOperations.map(operation => operation.id))
+
+    const orderedActiveOperations = useMemo(() => activeOperations.sort((a, b) => orderedOperationIDs.indexOf(a.id) - orderedOperationIDs.indexOf(b.id)), [activeOperations, orderedOperationIDs])
+
+    useEffect(() => {
+        const activeOperationIDs = activeOperations.map(operation => operation.id)
+
+        if (activeOperationIDs.length > orderedOperationIDs.length) {
+            setOrderedOperationIDs((current) => [...current, ...activeOperationIDs.filter(id => !orderedOperationIDs.includes(id))])
+        } else if (activeOperationIDs.length < orderedOperationIDs.length) {
+            setOrderedOperationIDs((current) => current.filter(id => activeOperationIDs.includes(id)))
+        }
+    }, [activeOperations])
 
     const onDragEnd = (result: any) => {
         if (!result.destination) {
             return
         }
-        setItems((oldItems) => reorder(oldItems, result.source.index, result.destination.index))
+        setOrderedOperationIDs((current: string[]) => reorder(current, result.source.index, result.destination.index))
     }
 
     return (
-        <DragDropContext onDragEnd={onDragEnd}>
-            <StrictModeDroppable droppableId="droppable">
-                {(provided, snapshot) => (
-                    <div
-                        {...provided.droppableProps}
-                        ref={provided.innerRef}
-                        style={getListStyle(snapshot.isDraggingOver)}
-                    >
-                        {items.map((item, index) => (
-                            <Draggable key={item.id} draggableId={item.id} index={index}>
-                                {(provided, snapshot) => (
-                                    <div
-                                        ref={provided.innerRef}
-                                        {...provided.draggableProps}
-                                        {...provided.dragHandleProps}
-                                        style={getItemStyle(
-                                            snapshot.isDragging,
-                                            provided.draggableProps.style
-                                        )}
-                                    >
-                                        {item.content}
-                                    </div>
-                                )}
-                            </Draggable>
-                        ))}
-                        {provided.placeholder}
-                    </div>
-                )}
-            </StrictModeDroppable>
-        </DragDropContext>
+        <>
+            <DragDropContext onDragEnd={onDragEnd}>
+                <StrictModeDroppable droppableId="droppable">
+                    {(provided, snapshot) => (
+                        <div
+                            {...provided.droppableProps}
+                            ref={provided.innerRef}
+                            style={getListStyle(snapshot.isDraggingOver)}
+                        >
+                            {orderedActiveOperations.map((operation, index) => (
+                                <Draggable key={operation.id} draggableId={operation.id} index={index}>
+                                    {(provided, snapshot) => (
+                                        <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            {...provided.dragHandleProps}
+                                            style={getItemStyle(
+                                                snapshot.isDragging,
+                                                provided.draggableProps.style
+                                            )}
+                                        >
+                                            {operation.title}
+                                        </div>
+                                    )}
+                                </Draggable>
+                            ))}
+                            {provided.placeholder}
+                        </div>
+                    )}
+                </StrictModeDroppable>
+            </DragDropContext>
+        </>
     )
 }
 

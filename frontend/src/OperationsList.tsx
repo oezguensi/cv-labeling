@@ -1,17 +1,17 @@
-import { SelectableTile } from '@carbon/react'
+import { ClickableTile } from '@carbon/react'
+import { FC } from 'react'
 
-const OperationsList = () => {
+const OperationsList: FC<{ operations: any[], setActiveOperationIDs: CallableFunction }> = ({ operations, setActiveOperationIDs }) => {
     return (
         <>
-            <SelectableTile id="selectable-tile-1" name="tiles">
-                Option 1
-            </SelectableTile>
-            <SelectableTile id="selectable-tile-2" name="tiles">
-                Option 2
-            </SelectableTile>
-            <SelectableTile id="selectable-tile-3" name="tiles">
-                Option 3
-            </SelectableTile>
+            {operations.map((operation: any) => (
+                <ClickableTile id={operation.id} name={operation.id}
+                    onClick={(event: any) => {
+                        setActiveOperationIDs((current: string[]) => current.includes(operation.id) ? current.filter(id => id !== operation.id) : [...current, operation.id])
+                    }}
+                >
+                    {operation.title}
+                </ClickableTile>))}
         </>
     )
 }

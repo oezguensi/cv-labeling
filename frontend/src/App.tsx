@@ -2,9 +2,8 @@ import { useState } from 'react'
 import { Theme, Grid, Column } from '@carbon/react'
 import './App.scss'
 import AppHeader from './AppHeader'
-import OperationsList from './OperationsList'
-import ActiveOperationsList from './ActiveOperationsList'
 import ImagesSection from './ImagesSection'
+import OperationsSection from './OperationsSection'
 
 
 const App = () => {
@@ -13,9 +12,8 @@ const App = () => {
     <Theme theme={theme}>
       <AppHeader setTheme={setTheme} />
       <Grid id='main'>
-        <Column lg={4}><OperationsList /></Column>
-        <Column lg={1}><ActiveOperationsList /></Column>
-        <Column lg={11}>
+        <OperationsSection />
+        <Column lg={10}>
           <ImagesSection />
         </Column>
       </Grid>
