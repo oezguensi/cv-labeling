@@ -1,0 +1,22 @@
+.operation-card {
+    p {
+        display: block;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+        max-height: 4.5em;
+        line-height: 1.5em;
+    }
+}
+
+.active-operation-card {
+    height: 8.5em;
+    width: 8.5em;
+
+    h3 {
+        display: block;
+        text-overflow: ellipsis;
+        word-wrap: break-word;
+        overflow: hidden;
+    }
+}
