@@ -34,3 +34,7 @@ def get_operations():
         operations.append(Operation(id=str(uuid4()), name=name, params=params, doc=doc))
     
     return operations
+
+@router.post("/")
+def apply_operations():
+    return 'test'

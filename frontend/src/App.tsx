@@ -24,6 +24,7 @@ const App = () => {
   const [theme, setTheme] = useState<'white' | "g10" | "g90" | 'g100'>('white')
   const [operations, setOperations] = useState<Operations>({ inactive: [], active: [] })
   const [fetching, setFetching] = useState<boolean>(true)
+  const [selectedImageFile, setSelectedImageFile] = useState(null)
 
   const fetchOperations = async () => {
     setFetching(true)
@@ -37,9 +38,28 @@ const App = () => {
     }
   }
 
+  const applyOperations = async () => {
+    setFetching(true)
+    try {
+      const response = await fetch(encodeURI(`http://0.0.0.0:8080/api/v1/operations`), { method: 'POST' })
+      console.log(await response.json())
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setFetching(false)
+    }
+  }
+
   useEffect(() => {
     fetchOperations()
   }, [])
+
+
+  useEffect(() => {
+    console.log('here')
+    applyOperations()
+  }, [selectedImageFile, operations])
+
 
   return (
     <Theme theme={theme}>
@@ -47,7 +67,7 @@ const App = () => {
       <Grid id='main'>
         {!fetching && <OperationsSection operations={operations} setOperations={setOperations} />}
         <Column lg={9}>
-          <ImagesSection />
+          <ImagesSection selectedImageFile={selectedImageFile} setSelectedImageFile={setSelectedImageFile} />
         </Column>
       </Grid>
     </Theme>

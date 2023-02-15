@@ -1,12 +1,11 @@
 import { FileUploaderDropContainer } from '@carbon/react'
-import { useState } from 'react'
+import { FC, useState } from 'react'
 import ImagesPreview from "./ImagesPreview"
 import MainImage from "./MainImage"
 
 
-const ImagesSection = () => {
+const ImagesSection: FC<{ selectedImageFile: any, setSelectedImageFile: CallableFunction }> = ({ selectedImageFile, setSelectedImageFile }) => {
     const [imageFiles, setImageFiles] = useState<any[]>([])
-    const [selectedImageFile, setSelectedImageFile] = useState(null)
 
     return (
         <>

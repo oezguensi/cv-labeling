@@ -9,8 +9,7 @@ import { Operation, Operations } from './App'
 const OperationsSection: FC<{ operations: Operations, setOperations: CallableFunction }> = ({ operations, setOperations }) => {
     const [draggingFromDroppableId, setDraggingFromDroppableId] = useState<string | null>(null)
 
-
-    const onDragEnd = (result: any, operations: Operations, setOperations: CallableFunction) => {
+    const onDragEnd = (result: any) => {
         if (!result.destination) return
         const { draggableId, source, destination } = result
 
@@ -33,7 +32,7 @@ const OperationsSection: FC<{ operations: Operations, setOperations: CallableFun
     }
 
     return (
-        <DragDropContext onDragEnd={(result) => onDragEnd(result, operations, setOperations)} onDragStart={(result) => { setDraggingFromDroppableId(result.source.droppableId) }}>
+        <DragDropContext onDragEnd={onDragEnd} onDragStart={(result) => { setDraggingFromDroppableId(result.source.droppableId) }}>
             <Column className='operations-column' lg={5} style={{ background: draggingFromDroppableId === null || draggingFromDroppableId === 'inactive' ? 'none' : 'lightblue' }}>
                 <Droppable droppableId='inactive'>
                     {(provided, snapshot) => {
