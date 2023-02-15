@@ -3,51 +3,63 @@ import { Column } from '@carbon/react'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import OperationCard from './OperationCard'
 import './OperationsSection.scss'
-import { Operation } from './App'
+import { Operation, Operations } from './App'
 
 
-const OperationsSection: FC<{ columns: any, setColumns: CallableFunction }> = ({ columns, setColumns }) => {
+const OperationsSection: FC<{ operations: Operations, setOperations: CallableFunction }> = ({ operations, setOperations }) => {
     const [draggingFromDroppableId, setDraggingFromDroppableId] = useState<string | null>(null)
 
 
-    const onDragEnd = (result: any, columns: any, setColumns: CallableFunction) => {
+    const onDragEnd = (result: any, operations: Operations, setOperations: CallableFunction) => {
         if (!result.destination) return
-        const { source, destination } = result
-        if (source.droppableId !== destination.droppableId) {
-            const sourceColumn = columns[source.droppableId]
-            const destColumn = columns[destination.droppableId]
-            const sourceItems = [...sourceColumn.items]
-            const destItems = [...destColumn.items]
-            const [removed] = sourceItems.splice(source.index, 1)
-            destItems.splice(destination.index, 0, removed)
-            setColumns((current: any) => ({ ...current, [source.droppableId]: { ...sourceColumn, items: sourceItems }, [destination.droppableId]: { ...destColumn, items: destItems } }))
-        } else {
-            const column = columns[source.droppableId]
-            const copiedItems = [...column.items]
-            const [removed] = copiedItems.splice(source.index, 1)
-            copiedItems.splice(destination.index, 0, removed)
-            setColumns((current: any) => ({ ...current, [source.droppableId]: { ...column, items: copiedItems } }))
-        }
+        const { draggableId, source, destination } = result
+
+        setOperations((current: Operations) => {
+            const draggedOperation = current[source.droppableId].filter(operation => operation.id === draggableId)[0]
+            if (source.droppableId !== destination.droppableId) {
+                draggedOperation.active = destination.droppableId === 'active'
+                const newSourceOperations = current[source.droppableId].filter(operation => operation.id !== draggableId)
+                const newDestinationOperations = [...current[destination.droppableId].slice(0, destination.index), draggedOperation, ...current[destination.droppableId].slice(destination.index, current[destination.droppableId].length)]
+                current[source.droppableId] = newSourceOperations
+                current[destination.droppableId] = newDestinationOperations
+            } else {
+                current[source.droppableId].splice(destination.index, 0, current[source.droppableId].splice(source.index, 1)[0])
+            }
+            return current
+        })
+
+
         setDraggingFromDroppableId(null)
     }
+
     return (
-        <DragDropContext onDragEnd={(result) => onDragEnd(result, columns, setColumns)} onDragStart={(result) => { setDraggingFromDroppableId(result.source.droppableId) }}>
-            {Object.entries(columns).map(([columnId, column]) => (
-                <Column className='operations-column' key={columnId} lg={column.colSize} style={{ background: draggingFromDroppableId === null || draggingFromDroppableId !== Object.keys(columns).filter(key => key !== columnId)[0] ? 'none' : 'lightblue' }}>
-                    <Droppable key={columnId} droppableId={columnId}>
-                        {(provided, snapshot) => {
-                            return (
-                                <div className='operations-section-column' ref={provided.innerRef} {...provided.droppableProps}>
-                                    <span>{column.title}</span>
-                                    {column.items.map((item: Operation, index: number) => <OperationCard columnId={columnId} key={item.id} item={item} index={index} setColumns={setColumns} />)}
-                                    {provided.placeholder}
-                                </div>
-                            )
-                        }}
-                    </Droppable>
-                </Column>
-            )
-            )}
+        <DragDropContext onDragEnd={(result) => onDragEnd(result, operations, setOperations)} onDragStart={(result) => { setDraggingFromDroppableId(result.source.droppableId) }}>
+            <Column className='operations-column' lg={5} style={{ background: draggingFromDroppableId === null || draggingFromDroppableId === 'inactive' ? 'none' : 'lightblue' }}>
+                <Droppable droppableId='inactive'>
+                    {(provided, snapshot) => {
+                        return (
+                            <div className='operations-section-column' ref={provided.innerRef} {...provided.droppableProps}>
+                                <span>Operations</span>
+                                {operations.inactive.map((operation: Operation, index: number) => <OperationCard key={operation.id} operation={operation} index={index} />)}
+                                {provided.placeholder}
+                            </div>
+                        )
+                    }}
+                </Droppable>
+            </Column>
+            <Column className='operations-column' lg={2} style={{ background: draggingFromDroppableId === null || draggingFromDroppableId === 'active' ? 'none' : 'lightblue' }}>
+                <Droppable droppableId='active'>
+                    {(provided, snapshot) => {
+                        return (
+                            <div className='operations-section-column' ref={provided.innerRef} {...provided.droppableProps}>
+                                <span>Active operations</span>
+                                {operations.active.map((operation: Operation, index: number) => <OperationCard key={operation.id} operation={operation} index={index} />)}
+                                {provided.placeholder}
+                            </div>
+                        )
+                    }}
+                </Droppable>
+            </Column>
         </DragDropContext>
     )
 }

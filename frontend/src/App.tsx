@@ -15,17 +15,21 @@ export type Operation = {
   hidden: boolean | null
 }
 
+export type Operations = {
+  inactive: Operation[]
+  active: Operation[]
+}
+
 const App = () => {
   const [theme, setTheme] = useState<'white' | "g10" | "g90" | 'g100'>('white')
-  const [columns, setColumns] = useState({ 'operations': { title: 'Operations', items: [], colSize: 5 }, 'active-operations': { title: 'Active operations', items: [], colSize: 2 } })
+  const [operations, setOperations] = useState<Operations>({ inactive: [], active: [] })
   const [fetching, setFetching] = useState<boolean>(true)
 
   const fetchOperations = async () => {
     setFetching(true)
     try {
       const response = await fetch(encodeURI(`http://0.0.0.0:8080/api/v1/operations`))
-      const data = (await response.json()).map((operation: Operation) => ({ ...operation, active: false, hidden: null })) as Operation[]
-      setColumns((current: any) => ({ ...current, 'operations': { ...current['operations'], items: data } }))
+      setOperations({ inactive: (await response.json() as Operation[]), active: [] })
     } catch (error) {
       console.error(error)
     } finally {
@@ -41,7 +45,7 @@ const App = () => {
     <Theme theme={theme}>
       <AppHeader setTheme={setTheme} />
       <Grid id='main'>
-        <OperationsSection columns={columns} setColumns={setColumns} />
+        {!fetching && <OperationsSection operations={operations} setOperations={setOperations} />}
         <Column lg={9}>
           <ImagesSection />
         </Column>

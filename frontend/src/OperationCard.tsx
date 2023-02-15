@@ -3,6 +3,7 @@ import { Tile, IconButton } from '@carbon/react'
 import { Edit, View, ViewOff } from '@carbon/react/icons'
 import { Draggable } from 'react-beautiful-dnd'
 import './OperationCard.scss'
+import { Operation } from './App'
 
 const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
     userSelect: "none",
@@ -10,19 +11,19 @@ const getItemStyle = (isDragging: boolean, draggableStyle: any) => ({
     ...draggableStyle
 })
 
-const OperationCard: FC<{ columnId: any, item: any, index: any, setColumns: CallableFunction }> = ({ columnId, item, index, setColumns }) => {
+const OperationCard: FC<{ operation: Operation, index: any }> = ({ operation, index }) => {
     return (
-        <Draggable key={item.id} draggableId={item.id} index={index}>
+        <Draggable key={operation.id} draggableId={operation.id} index={index}>
             {(provided, snapshot) => {
                 return (
-                    columnId === 'operations' ?
+                    !operation.active ?
                         <Tile className='operation-card' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={{ ...getItemStyle(snapshot.isDragging, provided.draggableProps.style) }}>
-                            <h3>{item.name}</h3>
-                            <p>{item.doc}</p>
+                            <h3>{operation.name}</h3>
+                            <p>{operation.doc}</p>
                         </Tile>
                         :
                         <Tile className='active-operation-card' ref={provided.innerRef} {...provided.draggableProps} {...provided.dragHandleProps} style={getItemStyle(snapshot.isDragging, provided.draggableProps.style)}>
-                            <h4>{item.name}</h4>
+                            <h4>{operation.name}</h4>
                             <IconButton label="(Un)hide operation" kind='ghost'>
                                 {<View />}
                             </IconButton>
